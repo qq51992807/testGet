@@ -30,10 +30,11 @@ import java.util.regex.Pattern;
 
 public class getSku   implements Runnable  {
     static int  num;
+    public  static String skuMessage="";
     public void run() {
         while(1==1) {
             try {
-                getSku.httpGet("https://mdskip.taobao.com/mobile/queryH5Detail.htm?decision=sku&itemId=634411655593&areaId=440000", "GBK", 1);
+                getSku.httpGet("https://mdskip.taobao.com/mobile/queryH5Detail.htm?decision=sku&itemId=20739895092&areaId=440000", "GBK", 1);
                 Thread.sleep(1000*60);
             } catch (HttpException e) {
                 e.printStackTrace();
@@ -44,7 +45,7 @@ public class getSku   implements Runnable  {
             }
         }
     }
-    public static void main(String[] args) {//mao  634112362416
+    public static void main(String[] args) {//mao  20739895092   mate40  634411655593
         //pcCode = {11: '北京市', 12: '天津市', 13: '河北省', 14: '山西省', 15: '内蒙古自治区', 21: '辽宁省', 22: '吉林省',
         //          23: '黑龙江省', 31: '上海市', 32: '江苏省', 33: '浙江省', 34: '安徽省', 35: '福建省', 36: '江西省',
         //          37: '山东省', 41: '河南省', 42: '湖北省', 43: '湖南省', 44: '广东省', 45: '广西壮族自治区', 46: '海南省',
@@ -97,7 +98,8 @@ if(method==1) {
         JSONObject jsonArray4 = new JSONObject(jsonArray3.get("0") + "");
 //        System.out.println(jsonArray4);
         int newNum=Integer.parseInt(jsonArray4.get("quantity")+"");
-        System.out.println("sku num is " + num);
+        System.out.println("当前库存为 " + newNum);
+        skuMessage=title+" 当前库存为:"+newNum;
         if(num!=newNum){
             num=newNum;
 //        getSku.httpGet("http://wxpusher.zjiecode.com/api/send/message/?appToken=AT_Q45yzpNW3dKPNaFF0SLXHZCfMjMcPFrJ&content="+title.trim()+"库存为"+jsonArray4.get("quantity")+"&uid=UID_yV8nb3gdc7I6eYSBRWY0IQP3bcgk","UTF-8",2);
@@ -183,6 +185,8 @@ if(method==1) {
         }
         return response;
     }
-
+    public  String getSkuMessage(){
+        return skuMessage;
+    }
 
 }
