@@ -28,26 +28,40 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class getSku {
+public class getSku   implements Runnable  {
+    static int  num;
+    public void run() {
+        while(1==1) {
+            try {
+                getSku.httpGet("https://mdskip.taobao.com/mobile/queryH5Detail.htm?decision=sku&itemId=634411655593&areaId=440000", "GBK", 1);
+                Thread.sleep(1000*60);
+            } catch (HttpException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public static void main(String[] args) {//mao  634112362416
         //pcCode = {11: '北京市', 12: '天津市', 13: '河北省', 14: '山西省', 15: '内蒙古自治区', 21: '辽宁省', 22: '吉林省',
         //          23: '黑龙江省', 31: '上海市', 32: '江苏省', 33: '浙江省', 34: '安徽省', 35: '福建省', 36: '江西省',
         //          37: '山东省', 41: '河南省', 42: '湖北省', 43: '湖南省', 44: '广东省', 45: '广西壮族自治区', 46: '海南省',
         //          50: '重庆市', 51: '四川省', 52: '贵州省', 53: '云南省', 54: '西藏自治区', 61: '陕西省', 62: '甘肃省',
         //          63: '青海省', 64: '宁夏回族自治区', 65: '新疆维吾尔自治区', 71: '台湾省', 81: '香港特别行政区', 82: '澳门特别行政区'}
-        try {
-            getSku.httpGet("https://mdskip.taobao.com/mobile/queryH5Detail.htm?decision=sku&itemId=634411655593&areaId=440000","GBK",1);
-            } catch (HttpException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        getSku getSku=new getSku();
+        Thread mThread1=new Thread(getSku,"线程1");
+        mThread1.start();
+
+
     }
 
 public static String httpGet(String url, String charset,int method)
-            throws HttpException, IOException {
+            throws HttpException, IOException  {
         String json = null;
         HttpGet httpGet = new HttpGet();
+
 // 设置参数
         try {
             httpGet.setURI(new URI(url));
@@ -82,8 +96,10 @@ if(method==1) {
 //        System.out.println(jsonArray3);
         JSONObject jsonArray4 = new JSONObject(jsonArray3.get("0") + "");
 //        System.out.println(jsonArray4);
-        String num=jsonArray4.get("quantity")+"";
+        int newNum=Integer.parseInt(jsonArray4.get("quantity")+"");
         System.out.println("sku num is " + num);
+        if(num!=newNum){
+            num=newNum;
 //        getSku.httpGet("http://wxpusher.zjiecode.com/api/send/message/?appToken=AT_Q45yzpNW3dKPNaFF0SLXHZCfMjMcPFrJ&content="+title.trim()+"库存为"+jsonArray4.get("quantity")+"&uid=UID_yV8nb3gdc7I6eYSBRWY0IQP3bcgk","UTF-8",2);
         String message=
                 " { \"appToken\":\"AT_Q45yzpNW3dKPNaFF0SLXHZCfMjMcPFrJ\"," +
@@ -97,11 +113,10 @@ if(method==1) {
                 "      \"UID_yV8nb3gdc7I6eYSBRWY0IQP3bcgk\"" +
                 "  ]}" ;
         getSku.post("http://wxpusher.zjiecode.com/api/send/message",message);
+        }
     } catch (JSONException e) {
         e.printStackTrace();
     }
-}else if(method==2){
-    System.out.println(json);
 }
 
         return json;
@@ -168,4 +183,6 @@ if(method==1) {
         }
         return response;
     }
+
+
 }
